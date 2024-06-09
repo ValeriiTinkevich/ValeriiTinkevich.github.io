@@ -98,6 +98,27 @@
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+      
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+          apiKey: "AIzaSyCtajDf3Gbz48YYZSiZh0tp7Y9rj937Ur0",
+          authDomain: "valeriigithubpages.firebaseapp.com",
+          projectId: "valeriigithubpages",
+          storageBucket: "valeriigithubpages.appspot.com",
+          messagingSenderId: "188943715763",
+          appId: "1:188943715763:web:bb486ce5ba0f01dc134fc6"
+        };
+        
+      
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+      </script>
 </head>
 <body>
     <header>
@@ -123,27 +144,6 @@
             <button onclick="addPost()">Добавить пост</button>
         </div>
     </div>
-    <script type="module">
-        // Import the functions you need from the SDKs you need
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        // TODO: Add SDKs for Firebase products that you want to use
-        // https://firebase.google.com/docs/web/setup#available-libraries
-      
-        // Your web app's Firebase configuration
-        const firebaseConfig = {
-          apiKey: "AIzaSyCtajDf3Gbz48YYZSiZh0tp7Y9rj937Ur0",
-          authDomain: "valeriigithubpages.firebaseapp.com",
-          projectId: "valeriigithubpages",
-          storageBucket: "valeriigithubpages.appspot.com",
-          messagingSenderId: "188943715763",
-          appId: "1:188943715763:web:bb486ce5ba0f01dc134fc6"
-        };
-        
-      
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-      </script>
     <script>
         document.getElementById('secret-button').addEventListener('click', function() {
             var password = prompt('Введите пароль:');
