@@ -86,18 +86,18 @@
 </head>
 <body>
     <header>
-        <h1>Valerii Tinkevich</h1>
+        <h1>Ваш Никнейм</h1>
         <button id="secret-button">🔑</button>
     </header>
     <div class="container">
         <div class="contact-info">
-            <p>Telegram: <a href="https://t.me/panicattackxx" target="_blank">@panicattackxx</a></p>
-            <p>GitHub: <a href="https://github.com/ValeriiTinkevich" target="_blank">github.com/ValeriiTinkevich</a></p>
+            <p>Telegram: <a href="https://t.me/yourusername" target="_blank">@yourusername</a></p>
+            <p>GitHub: <a href="https://github.com/yourusername" target="_blank">github.com/yourusername</a></p>
         </div>
         <div class="blog">
             <h2>Блог</h2>
             <div id="blog-posts">
-        
+                <!-- Здесь будут отображаться посты -->
             </div>
         </div>
         <div id="admin-panel">
@@ -118,6 +118,31 @@
             }
         });
 
+        function loadPosts() {
+            var posts = JSON.parse(localStorage.getItem('blogPosts')) || [];
+            posts.forEach(function(post) {
+                displayPost(post.title, post.date, post.content, post.image);
+            });
+        }
+
+        function savePost(post) {
+            var posts = JSON.parse(localStorage.getItem('blogPosts')) || [];
+            posts.push(post);
+            localStorage.setItem('blogPosts', JSON.stringify(posts));
+        }
+
+        function displayPost(title, date, content, imageSrc) {
+            var newPost = document.createElement('div');
+            newPost.className = 'blog-post';
+            newPost.innerHTML = '<h3>' + title + '</h3><p>' + date + '</p><p>' + content + '</p>';
+            if (imageSrc) {
+                var imgElement = document.createElement('img');
+                imgElement.src = imageSrc;
+                newPost.appendChild(imgElement);
+            }
+            document.getElementById('blog-posts').appendChild(newPost);
+        }
+
         function addPost() {
             var title = document.getElementById('post-title').value;
             var content = document.getElementById('post-content').value;
@@ -126,22 +151,18 @@
             if (title && content) {
                 var reader = new FileReader();
                 reader.onload = function(e) {
-                    var newPost = document.createElement('div');
-                    newPost.className = 'blog-post';
-                    
                     var currentDate = new Date();
                     var offset = currentDate.getTimezoneOffset() * 60000;
                     var moscowTime = new Date(currentDate.getTime() + offset + 3 * 3600000);
+                    var post = {
+                        title: title,
+                        date: moscowTime.toLocaleString(),
+                        content: content,
+                        image: e.target.result
+                    };
 
-                    newPost.innerHTML = '<h3>' + title + '</h3><p>' + moscowTime.toLocaleString() + '</p><p>' + content + '</p>';
-                    
-                    if (image) {
-                        var imgElement = document.createElement('img');
-                        imgElement.src = e.target.result;
-                        newPost.appendChild(imgElement);
-                    }
-
-                    document.getElementById('blog-posts').appendChild(newPost);
+                    displayPost(post.title, post.date, post.content, post.image);
+                    savePost(post);
 
                     // Очистить поля
                     document.getElementById('post-title').value = '';
@@ -152,12 +173,30 @@
                 if (image) {
                     reader.readAsDataURL(image);
                 } else {
-                    reader.onload();  // если нет изображения, просто создаем пост без него
+                    var currentDate = new Date();
+                    var offset = currentDate.getTimezoneOffset() * 60000;
+                    var moscowTime = new Date(currentDate.getTime() + offset + 3 * 3600000);
+                    var post = {
+                        title: title,
+                        date: moscowTime.toLocaleString(),
+                        content: content,
+                        image: null
+                    };
+
+                    displayPost(post.title, post.date, post.content, null);
+                    savePost(post);
+
+                    // Очистить поля
+                    document.getElementById('post-title').value = '';
+                    document.getElementById('post-content').value = '';
                 }
             } else {
                 alert('Пожалуйста, заполните все поля!');
             }
         }
+
+        // Загрузка постов при загрузке страницы
+        window.onload = loadPosts;
     </script>
 </body>
 </html>
