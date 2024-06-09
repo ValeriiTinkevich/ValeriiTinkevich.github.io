@@ -50,6 +50,10 @@
         .blog-post p {
             margin: 5px 0;
         }
+        .blog-post img {
+            max-width: 100%;
+            height: auto;
+        }
         #secret-button {
             position: absolute;
             top: 10px;
@@ -108,7 +112,7 @@
         <div id="admin-panel">
             <h2>Новый пост</h2>
             <input type="text" id="post-title" placeholder="Название поста">
-            <input type="text" id="post-date" placeholder="Дата публикации">
+            <input type="file" id="post-image" accept="image/*">
             <textarea id="post-content" placeholder="Содержание поста"></textarea>
             <button onclick="addPost()">Добавить пост</button>
         </div>
@@ -125,19 +129,40 @@
 
         function addPost() {
             var title = document.getElementById('post-title').value;
-            var date = document.getElementById('post-date').value;
             var content = document.getElementById('post-content').value;
+            var image = document.getElementById('post-image').files[0];
 
-            if (title && date && content) {
-                var newPost = document.createElement('div');
-                newPost.className = 'blog-post';
-                newPost.innerHTML = '<h3>' + title + '</h3><p>' + date + '</p><p>' + content + '</p>';
-                document.getElementById('blog-posts').appendChild(newPost);
+            if (title && content) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var newPost = document.createElement('div');
+                    newPost.className = 'blog-post';
+                    
+                    var currentDate = new Date();
+                    var offset = currentDate.getTimezoneOffset() * 60000;
+                    var moscowTime = new Date(currentDate.getTime() + offset + 3 * 3600000);
 
-                // Очистить поля
-                document.getElementById('post-title').value = '';
-                document.getElementById('post-date').value = '';
-                document.getElementById('post-content').value = '';
+                    newPost.innerHTML = '<h3>' + title + '</h3><p>' + moscowTime.toLocaleString() + '</p><p>' + content + '</p>';
+                    
+                    if (image) {
+                        var imgElement = document.createElement('img');
+                        imgElement.src = e.target.result;
+                        newPost.appendChild(imgElement);
+                    }
+
+                    document.getElementById('blog-posts').appendChild(newPost);
+
+                    // Очистить поля
+                    document.getElementById('post-title').value = '';
+                    document.getElementById('post-content').value = '';
+                    document.getElementById('post-image').value = '';
+                };
+                
+                if (image) {
+                    reader.readAsDataURL(image);
+                } else {
+                    reader.onload();  // если нет изображения, просто создаем пост без него
+                }
             } else {
                 alert('Пожалуйста, заполните все поля!');
             }
