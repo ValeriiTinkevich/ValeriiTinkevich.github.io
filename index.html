@@ -42,6 +42,7 @@
         }
         .blog-post {
             margin-bottom: 20px;
+            position: relative;
         }
         .blog-post h3 {
             margin: 0;
@@ -53,6 +54,17 @@
         .blog-post img {
             max-width: 100%;
             height: auto;
+        }
+        .delete-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #ff4d4d;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 5px 10px;
+            font-family: 'Consolas', monospace;
         }
         #secret-button {
             position: absolute;
@@ -83,6 +95,9 @@
             cursor: pointer;
         }
     </style>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
 </head>
 <body>
     <header>
@@ -109,6 +124,19 @@
         </div>
     </div>
     <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCtajDf3Gbz48YYZSiZh0tp7Y9rj937Ur0",
+            authDomain: "valeriigithubpages.firebaseapp.com",
+            projectId: "valeriigithubpages",
+            storageBucket: "valeriigithubpages.appspot.com",
+            messagingSenderId: "188943715763",
+            appId: "1:188943715763:web:bb486ce5ba0f01dc134fc6"
+          };
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
         document.getElementById('secret-button').addEventListener('click', function() {
             var password = prompt('Введите пароль:');
             if (password === 'Barm2001') {
@@ -119,19 +147,15 @@
         });
 
         function loadPosts() {
-            var posts = JSON.parse(localStorage.getItem('blogPosts')) || [];
-            posts.forEach(function(post) {
-                displayPost(post.title, post.date, post.content, post.image);
+            db.collection('posts').get().then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    var post = doc.data();
+                    displayPost(post.title, post.date, post.content, post.image, doc.id);
+                });
             });
         }
 
-        function savePost(post) {
-            var posts = JSON.parse(localStorage.getItem('blogPosts')) || [];
-            posts.push(post);
-            localStorage.setItem('blogPosts', JSON.stringify(posts));
-        }
-
-        function displayPost(title, date, content, imageSrc) {
+        function displayPost(title, date, content, imageSrc, id) {
             var newPost = document.createElement('div');
             newPost.className = 'blog-post';
             newPost.innerHTML = '<h3>' + title + '</h3><p>' + date + '</p><p>' + content + '</p>';
@@ -140,6 +164,13 @@
                 imgElement.src = imageSrc;
                 newPost.appendChild(imgElement);
             }
+            var deleteButton = document.createElement('button');
+            deleteButton.className = 'delete-button';
+            deleteButton.innerText = 'Удалить';
+            deleteButton.onclick = function() {
+                deletePost(id);
+            };
+            newPost.appendChild(deleteButton);
             document.getElementById('blog-posts').appendChild(newPost);
         }
 
@@ -161,15 +192,16 @@
                         image: e.target.result
                     };
 
-                    displayPost(post.title, post.date, post.content, post.image);
-                    savePost(post);
+                    db.collection('posts').add(post).then((docRef) => {
+                        displayPost(post.title, post.date, post.content, post.image, docRef.id);
 
-                    // Очистить поля
-                    document.getElementById('post-title').value = '';
-                    document.getElementById('post-content').value = '';
-                    document.getElementById('post-image').value = '';
+                        // Очистить поля
+                        document.getElementById('post-title').value = '';
+                        document.getElementById('post-content').value = '';
+                        document.getElementById('post-image').value = '';
+                    });
                 };
-                
+
                 if (image) {
                     reader.readAsDataURL(image);
                 } else {
@@ -183,20 +215,30 @@
                         image: null
                     };
 
-                    displayPost(post.title, post.date, post.content, null);
-                    savePost(post);
+                    db.collection('posts').add(post).then((docRef) => {
+                        displayPost(post.title, post.date, post.content, null, docRef.id);
 
-                    // Очистить поля
-                    document.getElementById('post-title').value = '';
-                    document.getElementById('post-content').value = '';
+                        // Очистить поля
+                        document.getElementById('post-title').value = '';
+                        document.getElementById('post-content').value = '';
+                    });
                 }
             } else {
                 alert('Пожалуйста, заполните все поля!');
             }
         }
 
+        function deletePost(id) {
+            db.collection('posts').doc(id).delete().then(() => {
+                document.getElementById('blog-posts').innerHTML = '';
+                loadPosts();
+            }).catch((error) => {
+                console.error('Ошибка при удалении документа: ', error);
+            });
+        }
+
         // Загрузка постов при загрузке страницы
-        window.onload = loadPosts;
+        loadPosts();
     </script>
 </body>
 </html>
