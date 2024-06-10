@@ -96,32 +96,8 @@
         }
     </style>
 
-</head>
-<body>
-    <header>
-        <h1>Valerii Tinkevich</h1>
-        <button id="secret-button">🔑</button>
-    </header>
-    <div class="container">
-        <div class="contact-info">
-            <p>Telegram: <a href="https://t.me/panicattackxx" target="_blank">@panicattackxx</a></p>
-            <p>GitHub: <a href="https://github.com/ValeriiTinkevich" target="_blank">github.com/ValeriiTinkevich</a></p>
-        </div>
-        <div class="blog">
-            <h2>Блог</h2>
-            <div id="blog-posts">
-                <!-- Здесь будут отображаться посты -->
-            </div>
-        </div>
-        <div id="admin-panel">
-            <h2>Новый пост</h2>
-            <input type="text" id="post-title" placeholder="Название поста">
-            <input type="file" id="post-image" accept="image/*">
-            <textarea id="post-content" placeholder="Содержание поста"></textarea>
-            <button onclick="addPost()">Добавить пост</button>
-        </div>
-    </div>
 
+    
         <!-- Firebase SDK -->
         <script type="module" src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
         <script type="module" src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
@@ -251,5 +227,31 @@
         // Загрузка постов при загрузке страницы
         loadPosts();
     </script>
+
+</head>
+<body>
+    <header>
+        <h1>Valerii Tinkevich</h1>
+        <button id="secret-button">🔑</button>
+    </header>
+    <div class="container">
+        <div class="contact-info">
+            <p>Telegram: <a href="https://t.me/panicattackxx" target="_blank">@panicattackxx</a></p>
+            <p>GitHub: <a href="https://github.com/ValeriiTinkevich" target="_blank">github.com/ValeriiTinkevich</a></p>
+        </div>
+        <div class="blog">
+            <h2>Блог</h2>
+            <div id="blog-posts">
+                <!-- Здесь будут отображаться посты -->
+            </div>
+        </div>
+        <div id="admin-panel">
+            <h2>Новый пост</h2>
+            <input type="text" id="post-title" placeholder="Название поста">
+            <input type="file" id="post-image" accept="image/*">
+            <textarea id="post-content" placeholder="Содержание поста"></textarea>
+            <button onclick="addPost()">Добавить пост</button>
+        </div>
+    </div>
 </body>
 </html>
