@@ -120,7 +120,6 @@
       
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);;
-        const db = firebase.firestore();
       </script>
 </head>
 <body>
@@ -147,7 +146,8 @@
             <button onclick="addPost()">Добавить пост</button>
         </div>
     </div>
-    <script defer>
+    <script>
+        const db = firebase.firestore();
         document.getElementById('secret-button').addEventListener('click', function() {
             var password = prompt('Введите пароль:');
             if (password === 'Barm2001') {
